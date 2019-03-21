@@ -76,7 +76,10 @@ function uptime() {
 		$("#loading-notice").remove();
 		if(result.reload)
 			setTimeout(function() { location.reload(true) }, 1000);
-
+		var down_sum=0;
+		var up_sum=0;
+		var trans_in_sum=0;
+		var trans_out_sum=0;
 		for (var i = 0; i < result.servers.length; i++) {
 			var TableRow = $("#servers tr#r" + i);
 			var ExpandRow = $("#servers #rt" + i);
@@ -180,7 +183,10 @@ function uptime() {
 				} else {
 					TableRow.children["load"].innerHTML = result.servers[i].load;
 				}
-
+down_sum=down_sum+result.servers[i].network_rx;
+			up_sum=up_sum+result.servers[i].network_tx;
+			trans_in_sum=trans_in_sum+result.servers[i].network_in;
+			trans_out_sum=trans_out_sum+result.servers[i].network_out;
 				// Network
 				var netstr = "";
 				if(result.servers[i].network_rx < 1000)
@@ -267,7 +273,54 @@ function uptime() {
 				}
 			}
 		};
-
+		var down_sumstr= ""
+				if(down_sum< 1024)
+					down_sumstr = down_sum.toFixed(0) + "B";
+				else if(down_sum< 1024*1024)
+					down_sumstr= (down_sum/1024).toFixed(0) + "K";
+				else if(down_sum < 1024*1024*1024)
+					down_sumstr= (down_sum/1024/1024).toFixed(1) + "M";
+				else if(down_sum< 1024*1024*1024*1024)
+					down_sumstr= (down_sum/1024/1024/1024).toFixed(2) + "G";
+				else
+					down_sumstr= (down_sum/1024/1024/1024/1024).toFixed(2) + "T";
+				var up_sumstr= ""
+				if(up_sum< 1024)
+					up_sumstr = up_sum.toFixed(0) + "B";
+				else if(up_sum< 1024*1024)
+					up_sumstr= (up_sum/1024).toFixed(0) + "K";
+				else if(up_sum < 1024*1024*1024)
+					up_sumstr= (up_sum/1024/1024).toFixed(1) + "M";
+				else if(up_sum< 1024*1024*1024*1024)
+					up_sumstr= (up_sum/1024/1024/1024).toFixed(2) + "G";
+				else
+					up_sumstr= (up_sum/1024/1024/1024/1024).toFixed(2) + "T";
+		var downtrans_sumstr= ""
+				if(trans_in_sum< 1024)
+					downtrans_sumstr = trans_in_sum.toFixed(0) + "B";
+				else if(trans_in_sum< 1024*1024)
+					downtrans_sumstr= (trans_in_sum/1024).toFixed(0) + "K";
+				else if(trans_in_sum< 1024*1024*1024)
+					downtrans_sumstr= (trans_in_sum/1024/1024).toFixed(1) + "M";
+				else if(trans_in_sum< 1024*1024*1024*1024)
+					downtrans_sumstr= (trans_in_sum/1024/1024/1024).toFixed(2) + "G";
+				else
+					downtrans_sumstr= (trans_in_sum/1024/1024/1024/1024).toFixed(2) + "T";
+				var uptrans_sumstr= ""
+				if(trans_out_sum< 1024)
+					uptrans_sumstr = trans_out_sum.toFixed(0) + "B";
+				else if(trans_out_sum< 1024*1024)
+					uptrans_sumstr= (trans_out_sum/1024).toFixed(0) + "K";
+				else if(trans_out_sum < 1024*1024*1024)
+					uptrans_sumstr= (trans_out_sum/1024/1024).toFixed(1) + "M";
+				else if(trans_out_sum< 1024*1024*1024*1024)
+					uptrans_sumstr= (trans_out_sum/1024/1024/1024).toFixed(2) + "G";
+				else
+					uptrans_sumstr= (trans_out_sum/1024/1024/1024/1024).toFixed(2) + "T";
+document.getElementById('download_sum').innerHTML=down_sumstr;
+document.getElementById('upload_sum').innerHTML=up_sumstr;
+document.getElementById('download_transfer_sum').innerHTML=downtrans_sumstr;
+document.getElementById('upload_transfer_sum').innerHTML=uptrans_sumstr;
 		d = new Date(result.updated*1000);
 		error = 0;
 	}).fail(function(update_error) {
